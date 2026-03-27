@@ -1,0 +1,15 @@
+export { default as DashboardPage } from './DashboardPage';
+export { default as CalendarPage } from './CalendarPage';
+export { default as SitesPage } from './SitesPage';
+export { default as StudentDetailsPage } from './StudentDetailsPage';
+export { default as TeachersPage } from './TeachersPage';
+export { default as FilieresPage } from './FilieresPage';
+export { default as SallePage } from './SallePage';
+export { default as AnneeEtudePage } from './AnneeEtudePage';
+export { default as MatieresPage } from './MatieresPage';
+export { default as OrganisationPage } from './OrganisationPage';
+export { default as EvaluationsPage } from './EvaluationsPage';
+export { default as DemandesPage } from './DemandesPage';
+export { default as PerformancesPage } from './PerformancesPage';
+export { default as CommunicationPage } from './CommunicationPage';
+export { default as UsersPage } from './UsersPage';
