@@ -495,15 +495,15 @@ const EvaluationsPage: React.FC = () => {
     const planned = evaluationItems.filter((evaluation) => evaluation.status === 'A planifier').length;
     const confirmed = evaluationItems.filter((evaluation) => evaluation.status === 'Confirmee').length;
     const watch = evaluationItems.filter((evaluation) => evaluation.status === 'Sous surveillance').length;
-    const averageProgress = Math.round(
-      evaluationItems.reduce((sum, evaluation) => sum + evaluation.progressRate, 0) / evaluationItems.length
-    );
+    const uniqueRooms = new Set(evaluationItems.map((evaluation) => evaluation.room)).size;
+    const uniqueFilieres = new Set(evaluationItems.map((evaluation) => evaluation.filiere)).size;
 
     return {
       planned,
       confirmed,
       watch,
-      averageProgress,
+      uniqueRooms,
+      uniqueFilieres,
     };
   }, [evaluationItems]);
 
@@ -550,25 +550,25 @@ const EvaluationsPage: React.FC = () => {
             <div className="rounded-[28px] border border-white/10 bg-white/10 p-5 backdrop-blur">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue-50">Repère calendrier</p>
               <p className="mt-2 text-sm text-slate-200">
-                Votre centre a {evaluationItems.length} évaluations prévues sur la période, dont {stats.watch} à surveiller de près.
+                Le calendrier regroupe {evaluationItems.length} évaluations sur la période, avec {stats.planned} à finaliser et {stats.confirmed} déjà confirmées.
               </p>
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl bg-white/10 p-5">
                   <p className="text-base text-slate-200">Salles mobilisées</p>
-                  <p className="mt-2 text-4xl font-bold">4</p>
+                  <p className="mt-2 text-4xl font-bold">{stats.uniqueRooms}</p>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-5">
-                  <p className="text-base text-slate-200">Surveillants validés</p>
-                  <p className="mt-2 text-4xl font-bold">9</p>
+                  <p className="text-base text-slate-200">Filières concernées</p>
+                  <p className="mt-2 text-4xl font-bold">{stats.uniqueFilieres}</p>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-5">
-                  <p className="text-base text-slate-200">Résultats en attente</p>
-                  <p className="mt-2 text-4xl font-bold">7</p>
+                  <p className="text-base text-slate-200">Évaluations confirmées</p>
+                  <p className="mt-2 text-4xl font-bold">{stats.confirmed}</p>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-5">
-                  <p className="text-base text-slate-200">Copies corrigées</p>
-                  <p className="mt-2 text-4xl font-bold">{stats.averageProgress}%</p>
+                  <p className="text-base text-slate-200">Sous surveillance</p>
+                  <p className="mt-2 text-4xl font-bold">{stats.watch}</p>
                 </div>
               </div>
             </div>
@@ -673,6 +673,21 @@ const EvaluationsPage: React.FC = () => {
                 </div>
               </div>
 
+              <div className="mt-6 rounded-[24px] border border-amber-100 bg-amber-50 px-5 py-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Flux surveillants</p>
+                    <p className="mt-1 text-sm text-amber-800">
+                      {pendingSupervisorConfirmations} session{pendingSupervisorConfirmations > 1 ? 's' : ''} créée
+                      {pendingSupervisorConfirmations > 1 ? 's' : ''} par les surveillants attendent encore une confirmation admin.
+                    </p>
+                  </div>
+                  <div className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-amber-700 shadow-sm">
+                    Source surveillant à traiter
+                  </div>
+                </div>
+              </div>
+
               <div className="mt-6 rounded-[26px] border border-slate-100 bg-slate-50/80 p-5">
                 <div className="mb-4 flex items-center justify-between">
                   <div>
@@ -750,9 +765,22 @@ const EvaluationsPage: React.FC = () => {
                             <p className="mt-1 text-sm text-slate-500">
                               {evaluation.filiere} • {evaluation.level}
                             </p>
-                            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
-                              Créée par: {evaluation.createdBy}
-                            </p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <span
+                                className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${
+                                  evaluation.createdBy === 'Surveillant'
+                                    ? 'bg-amber-100 text-amber-700'
+                                    : 'bg-blue-100 text-blue-700'
+                                }`}
+                              >
+                                Source: {evaluation.createdBy}
+                              </span>
+                              {evaluation.needsAdminConfirmation ? (
+                                <span className="inline-flex rounded-full bg-rose-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-rose-700">
+                                  Validation admin requise
+                                </span>
+                              ) : null}
+                            </div>
                           </div>
                           <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${statusStyles[evaluation.status]}`}>
                             {evaluation.status}
@@ -807,6 +835,7 @@ const EvaluationsPage: React.FC = () => {
                       <th className="px-4 py-3 text-left">Évaluation</th>
                       <th className="px-4 py-3 text-left">Date</th>
                       <th className="px-4 py-3 text-left">Salle</th>
+                      <th className="px-4 py-3 text-left">Source</th>
                       <th className="px-4 py-3 text-left">Responsable</th>
                       <th className="px-4 py-3 text-left">Avancement</th>
                       <th className="px-4 py-3 text-left">Situation</th>
@@ -825,6 +854,17 @@ const EvaluationsPage: React.FC = () => {
                         </td>
                         <td className="px-4 py-4">{evaluation.dateLabel}</td>
                         <td className="px-4 py-4">{evaluation.room}</td>
+                        <td className="px-4 py-4">
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                              evaluation.createdBy === 'Surveillant'
+                                ? 'bg-amber-50 text-amber-700'
+                                : 'bg-blue-50 text-blue-700'
+                            }`}
+                          >
+                            {evaluation.createdBy}
+                          </span>
+                        </td>
                         <td className="px-4 py-4">{evaluation.teacher}</td>
                         <td className="px-4 py-4">{evaluation.progressRate}%</td>
                         <td className="px-4 py-4">

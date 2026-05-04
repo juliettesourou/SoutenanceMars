@@ -21,6 +21,8 @@ import {
 } from '../pages/super-admin'
 import HomePage from '../pages/public/HomePage'
 import AdminDashboardPage from '../pages/dashboard/admin'
+import EnseignantDashboardPage from '../pages/dashboard/enseignant'
+import EnseignantSidebar from '../components/enseignant/EnseignantSidebar'
 import CentersPage from '../pages/dashboard/admin/pages/CentersPage'
 import StudentsPage from '../pages/dashboard/admin/pages/StudentsPage'
 import AdminEvaluationsPage from '../pages/dashboard/admin/pages/EvaluationsPage'
@@ -28,6 +30,27 @@ import AdminTeachersPage from '../pages/dashboard/admin/pages/TeachersPage'
 import AdminPerformancesPage from '../pages/dashboard/admin/pages/PerformancesPage'
 import AdminMatieresPage from '../pages/dashboard/admin/pages/MatieresPage'
 import SurveillantsPage from '../pages/dashboard/admin/pages/SurveillantsPage'
+import SurveillantSidebar from '../components/surveillant/SurveillantSidebar'
+import SurveillantDashboardPage from '../pages/dashboard/surveillant'
+import TimetablePage from '../pages/dashboard/surveillant/timetable'
+import CoursesPage from '../pages/dashboard/surveillant/courses'
+import AssignTeachersPage from '../pages/dashboard/surveillant/assign-teachers'
+import AssignRoomsPage from '../pages/dashboard/surveillant/assign-rooms'
+import ConflictsPage from '../pages/dashboard/surveillant/conflicts'
+import AbsencesPage from '../pages/dashboard/surveillant/absences'
+import ReportsPage from '../pages/dashboard/surveillant/reports'
+import MissionsPage from '../pages/dashboard/surveillant/missions'
+import EvaluationsPageSurv from '../pages/dashboard/surveillant/evaluations'
+import CalendarPageSurv from '../pages/dashboard/surveillant/calendar'
+import NotificationsPageSurv from '../pages/dashboard/surveillant/notifications'
+import SecretaireSidebar from '../components/secretaire/SecretaireSidebar'
+import SecretaireDashboardPage from '../pages/dashboard/secretaire'
+import EnseignantEvaluationsPage from '../pages/dashboard/enseignant/EvaluationsPage'
+import EnseignantMatieresPage from '../pages/dashboard/enseignant/MatieresPage'
+import EnseignantClassesPage from '../pages/dashboard/enseignant/ClassesPage'
+import EnseignantCalendarPage from '../pages/dashboard/enseignant/CalendarPage'
+import EnseignantNotificationsPage from '../pages/dashboard/enseignant/NotificationsPage'
+import EnseignantMessagesPage from '../pages/dashboard/enseignant/MessagesPage'
 
 const AppRouter = () => (
   <BrowserRouter>
@@ -66,6 +89,19 @@ const AppRouter = () => (
         }
       />
 
+      {/* Espace secretaire */}
+      <Route
+        path="/dashboard/secretaire/*"
+        element={
+          <DashboardLayout>
+            <SecretaireSidebar />
+            <Routes>
+              <Route index element={<SecretaireDashboardPage />} />
+            </Routes>
+          </DashboardLayout>
+        }
+      />
+
       {/* Espace admin centre */}
       <Route
         path="/dashboard/admin/*"
@@ -81,6 +117,49 @@ const AppRouter = () => (
               <Route path="matieres" element={<AdminMatieresPage />} />
               <Route path="performances" element={<AdminPerformancesPage />} />
               <Route path="centres" element={<CentersPage />} />
+            </Routes>
+          </DashboardLayout>
+        }
+      />
+
+      {/* Espace enseignant (French naming: "enseignant") */}
+      <Route
+        path="/dashboard/enseignant/*"
+        element={
+          <DashboardLayout>
+            <EnseignantSidebar />
+            <Routes>
+              <Route index element={<EnseignantDashboardPage />} />
+              <Route path="evaluations" element={<EnseignantEvaluationsPage />} />
+              <Route path="matieres" element={<EnseignantMatieresPage />} />
+              <Route path="classes" element={<EnseignantClassesPage />} />
+              <Route path="calendar" element={<EnseignantCalendarPage />} />
+              <Route path="notifications" element={<EnseignantNotificationsPage />} />
+              <Route path="messages" element={<EnseignantMessagesPage />} />
+            </Routes>
+          </DashboardLayout>
+        }
+      />
+
+      {/* Espace surveillant */}
+      <Route
+        path="/dashboard/surveillant/*"
+        element={
+          <DashboardLayout>
+            <SurveillantSidebar />
+            <Routes>
+              <Route index element={<SurveillantDashboardPage />} />
+              <Route path="timetable" element={<TimetablePage />} />
+              <Route path="courses" element={<CoursesPage />} />
+              <Route path="assign-teachers" element={<AssignTeachersPage />} />
+              <Route path="assign-rooms" element={<AssignRoomsPage />} />
+              <Route path="conflicts" element={<ConflictsPage />} />
+              <Route path="absences" element={<AbsencesPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="missions" element={<MissionsPage />} />
+              <Route path="evaluations" element={<EvaluationsPageSurv />} />
+              <Route path="calendar" element={<CalendarPageSurv />} />
+              <Route path="notifications" element={<NotificationsPageSurv />} />
             </Routes>
           </DashboardLayout>
         }
